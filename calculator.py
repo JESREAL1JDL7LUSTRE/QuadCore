@@ -1,21 +1,27 @@
-def calculate(a, op, b):
-    if op == "+":
+class Calculator:
+    def add(self, a, b):
         return a + b
-    elif op == "-":
-        return a - b
-    elif op == "*":
-        return a * b
-    elif op == "/":
-        if b == 0:
-            return "cannot divide by zero"
-        return a / b
     
+
+# Instantiate the class
+calc = Calculator()
+
 while True:
-    n1 = input("\nEnter the 1st Number (or q to quit): ")
-    if n1 == "q":
+    print("\n1-add")
+    choice = input("function: ")
+
+    if choice == '5':
+        print("Exiting calculator. Goodbye!")
         break
-    try:
-        n1 = float(n1)
-    except:
-        print("invalid Number")
-        continue
+
+    if choice in ('1'):
+        try:
+            num1 = float(input("select number 1: "))
+            num2 = float(input("select number 2: "))
+
+            if choice == '1':
+                print(f"Sum: {calc.add(num1, num2)}")
+        except ValueError:
+            print("Invalid input! Please enter numerical values.")
+    else:
+        print("Invalid choice. Please select 1-5.")
