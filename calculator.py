@@ -2,12 +2,14 @@ class Calculator:
     def add(self, a, b):
         return a + b
     
+    def subtract(self, a, b):
+        return a - b
 
 # Instantiate the class
 calc = Calculator()
 
 while True:
-    print("\n1-add")
+    print("\n1-add, 2-substract ")
     choice = input("function: ")
 
     if choice == '5':
@@ -21,6 +23,8 @@ while True:
 
             if choice == '1':
                 print(f"Sum: {calc.add(num1, num2)}")
+            elif choice == '2':
+                print(f"Difference: {calc.substract(num1, num2)}")
         except ValueError:
             print("Invalid input! Please enter numerical values.")
     else:
