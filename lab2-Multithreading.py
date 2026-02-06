@@ -4,7 +4,9 @@ def compute_gwa(grades):
     gwa = sum(grades) / len(grades)
     print(f"[Thread] Calculated GWA: {gwa}")
 
-grades_list = [85, 90, 78, 92] # Replace with user input
+InputedGrades = [int(x) for x in input("Enter grade separated by spaces: ").split()]
+
+grades_list = InputedGrades
 
 threads = []
 for grade in grades_list:
