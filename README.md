@@ -1,4 +1,13 @@
+PART 3:
 
+| Method            | Execution Order| GWA Output| Execution Time |
+|-------------------|----------------|-----------|----------|
+| Multithreading    | Data           | Data     | Data     |
+| Multiprocessing   | Data           | Data      | Data     |
+
+
+
+PART 4:
 1. Which approach demonstrates true parallelism in Python? Explain.
 
 2. Compare execution times between multithreading and multiprocessing.
@@ -11,5 +20,4 @@ method is faster and why?
 5. Which method is better for CPU-bound tasks and which for I/O-bound
 tasks?
 
-6. How did your group apply creative coding or algorithmic solutions in this
-lab?
+6. How did your group apply creative coding or algorithmic solutions in this lab?
