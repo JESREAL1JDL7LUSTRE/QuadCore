@@ -2,8 +2,9 @@ import time
 import threading
 
 def compute_gwa(grades, order):
+    print(f"[Thread {order}] Started - Processing grade: {grades[0]}")
     gwa = sum(grades) / len(grades)
-    print(f"[Thread {order}] Processing grade: {grades[0]}")
+    print(f"[Thread {order}] Completed - Grade: {grades[0]}")
 
 InputedGrades = [int(x) for x in input("Enter grade separated by spaces: ").split()]
 
@@ -12,11 +13,16 @@ grades_list = InputedGrades
 # Start timing
 start_time = time.time()
 
+print("\n" + "="*50)
+print("EXECUTION ORDER - THREADING")
+print("="*50 + "\n")
+
 threads = []
 for i, grade in enumerate(grades_list, 1):
     t = threading.Thread(target=compute_gwa, args=([grade], i))
     threads.append(t)
     t.start()
+    print(f"Main: Launched Thread {i}")
 
 for t in threads:
     t.join()
