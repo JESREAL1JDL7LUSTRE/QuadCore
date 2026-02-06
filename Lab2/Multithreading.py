@@ -1,9 +1,9 @@
 import time
 import threading
 
-def compute_gwa(grades):
+def compute_gwa(grades, order):
     gwa = sum(grades) / len(grades)
-    print(f"[Thread] Calculated GWA: {gwa}")
+    print(f"[Thread {order}] Processing grade: {grades[0]}")
 
 InputedGrades = [int(x) for x in input("Enter grade separated by spaces: ").split()]
 
@@ -13,8 +13,8 @@ grades_list = InputedGrades
 start_time = time.time()
 
 threads = []
-for grade in grades_list:
-    t = threading.Thread(target=compute_gwa, args=([grade],))
+for i, grade in enumerate(grades_list, 1):
+    t = threading.Thread(target=compute_gwa, args=([grade], i))
     threads.append(t)
     t.start()
 
@@ -25,4 +25,11 @@ for t in threads:
 end_time = time.time()
 execution_time = end_time - start_time
 
-print(f"\nExecution time: {execution_time:.6f} seconds")
+# Calculate final GWA
+final_gwa = sum(grades_list) / len(grades_list)
+
+print(f"\n{'='*50}")
+print(f"Total threads executed: {len(grades_list)}")
+print(f"Final GWA: {final_gwa:.2f}")
+print(f"Execution time: {execution_time:.6f} seconds")
+print(f"{'='*50}")
