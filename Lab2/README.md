@@ -1,13 +1,16 @@
-PART 3:
+PART 3: Execution time for both methods
 
 | Method            | Execution Order| GWA Output| Execution Time |
-|-------------------|----------------|-----------|----------|
-| Multithreading    | Data           | Data     | Data     |
-| Multiprocessing   | Data           | Data      | Data     |
+|-------------------|----------------|-----------|----------------|
+| Multithreading    | Data           | Data      | Data           |
+| Multiprocessing   | Data           | Data      | Data           |
 
-
+Discuss why outputs may appear in different order for threads and processes.
+Think creatively about how you could optimize your code for faster execution or
+better readability.
 
 PART 4:
+
 1. Which approach demonstrates true parallelism in Python? Explain.
 
 2. Compare execution times between multithreading and multiprocessing.
