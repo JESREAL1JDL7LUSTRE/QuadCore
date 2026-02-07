@@ -1,41 +1,54 @@
 import time
+import random
 from multiprocessing import Process
 
-def compute_gwa_mp(grades, order):
-    print(f"[Process {order}] Started - Processing grade: {grades[0]}")
+def compute_gwa_mp(student_name, grades):
+    start_time = time.time()
+
+    # simulate variable processing times to observe order
+    time.sleep(random.uniform(0.5, 2))
+
     gwa = sum(grades) / len(grades)
-    print(f"[Process {order}] Completed - Grade: {grades[0]}")
+    processing_time = time.time() - start_time
 
-InputedGrades = [int(x) for x in input("Enter grade separated by spaces: ").split()]
+    print(f"[Process - {student_name}] GWA: {gwa:.2f} | Processing Time: {processing_time:.2f} sec")
 
-grades_list = InputedGrades
+# ---- USER INPUT ----
+num_students = int(input("Enter number of students: "))
+students_data = []
 
-# Start timing
-start_time = time.time()
+# collect all inputs first
+for i in range(num_students):
+    student_name = input(f"\nEnter name of student {i+1}: ")
+    grades = []
+    for j in range(4):
+        grade = float(input(f"Enter grade for subject {j+1}: "))
+        grades.append(grade)
+    students_data.append((student_name, grades))
+
+processes = []
 
 print("\n" + "="*50)
 print("EXECUTION ORDER - MULTIPROCESSING")
 print("="*50 + "\n")
 
-processes = []
-for i, grade in enumerate(grades_list, 1):
-    p = Process(target=compute_gwa_mp, args=([grade], i))
+start_time = time.time()
+
+# start a process for each student
+for student_name, grades in students_data:
+    p = Process(target=compute_gwa_mp, args=(student_name, grades))
     processes.append(p)
     p.start()
-    print(f"Main: Launched Process {i}")
+    print(f"Main: Launched Process for {student_name}")
 
+# wait for all processes to finish
 for p in processes:
     p.join()
 
-# End timing
 end_time = time.time()
 execution_time = end_time - start_time
 
-# Calculate final GWA
-final_gwa = sum(grades_list) / len(grades_list)
-
 print(f"\n{'='*50}")
-print(f"Total processes executed: {len(grades_list)}")
-print(f"Final GWA: {final_gwa:.2f}")
-print(f"Execution time: {execution_time:.6f} seconds")
+print(f"Total processes executed: {len(students_data)}")
+print(f"Overall execution time: {execution_time:.6f} seconds")
 print(f"{'='*50}")
