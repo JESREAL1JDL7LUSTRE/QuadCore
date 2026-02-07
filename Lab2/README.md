@@ -27,28 +27,6 @@ There are several ways on how we can optimize our code for faster execution and 
 
 The readability of the code can be improved by organizing it into clear functions, which makes it easier to read, maintain, and modify. Use multithreading for I/O tasks like reading files or making network requests, and multiprocessing for heavy computation like math or data processing. Make your code readable by breaking it into clear functions and using list comprehensions where appropriate. Consistent output formatting also helps, especially when multiple things are running at once.
 
-
-Why outputs may appear in different order
-
-Multithreading (Concurrency / Interleaved Execution)
-
-Threads share the same memory and are controlled by Python’s Global Interpreter Lock (GIL).
-
-The GIL allows only one thread to execute Python code at a time, so the threads take turns running.
-
-Because of this rapid switching and the random delays we added, threads may finish in a different order than the order they were started.
-
-That’s why the GWA outputs for Bea, Jesreal, Angel, and Gil appear in the order a, g, j, b instead of the input order.
-
-Multiprocessing (Independent Execution / True Parallelism)
-
-Each process runs independently in its own memory space and can run on a separate CPU core.
-
-Processes don’t share memory, so they can truly run at the same time.
-
-The completion order depends on processing time and random delays, not the order the processes were launched.
-
-That’s why the outputs appear in a different order (b, j, a, g) than the input order.
 4. Questions
 
 1. Which approach demonstrates true parallelism in Python? Explain.
