@@ -6,36 +6,50 @@ Takes student names and 4 subject grades per student, creates a separate process
 
 3. Execution time for both methods
 
-| Method            | Execution Order| GWA Output| Execution Time |
-|-------------------|----------------|-----------|----------------|
-| Multithreading    | Data           | Data      | Data           |
-| Multiprocessing   | Data           | Data      | Data           |
+| Method            |      Execution Order       |         GWA Output         | Execution Time |
+|-------------------|----------------------------|----------------------------|----------------|
+| Multithreading    | a, g, j, b = Concurrency   | 87.50, 92.75, 89.00, 87.50 | 1.973820 secs  |
+| Multiprocessing   | b, j, a, g = Independently | 87.50, 89.00, 87.50, 92.75 | 1.639969 secs  |
 
- bea = 80, 85, 90, 95
- jesreal = 87, 82, 94, 93
- angel = 91, 89, 76, 94
- gil = 98, 90, 88, 95
+Sample Inputs:
+ bea = 80, 85, 90, 95       (b)
+ jesreal = 87, 82, 94, 93   (j)
+ angel = 91, 89, 76, 94     (a)
+ gil = 98, 90, 88, 95       (g)
 
 Discuss why outputs may appear in different order for threads and processes.
 Think creatively about how you could optimize your code for faster execution or
 better readability.
 
+When you run multiple threads or processes, the output order can vary each time because the operating system decides which one runs when based on CPU availability, system load, and other factors, so tasks that start in one order may finish in another.
+
+There are several ways on how we can optimize our code for faster execution and better readability. First, we must choose either multiprocessing or multithreading based on its usage. In multithreading, threads share memory and switch rapidly, so whichever thread reaches the print statement first shows up in the output. Python's Global Interpreter Lock (GIL) adds another layer of timing complexity here. With multiprocessing, each process has its own memory and can run truly in parallel on different CPU cores, so they finish independently and results appear in whatever order they complete.
+
+The readability of the code can be improved by organizing it into clear functions, which makes it easier to read, maintain, and modify. Use multithreading for I/O tasks like reading files or making network requests, and multiprocessing for heavy computation like math or data processing. Make your code readable by breaking it into clear functions and using list comprehensions where appropriate. Consistent output formatting also helps, especially when multiple things are running at once.
+
 4. Questions
 
 1. Which approach demonstrates true parallelism in Python? Explain.
+- Multiprocessing demonstrates true parallelism in Python. This is because each process runs independently on its own CPU core with its own memory space, so multiple processes can actually execute at the same time. Threads, on the other hand, share the same memory and are limited by Python’s Global Interpreter Lock (GIL), which means only one thread can do CPU work at a time. That’s why threads run concurrently but don’t achieve real parallelism.
 
 2. Compare execution times between multithreading and multiprocessing.
+- In the experiment, multiprocessing completed faster than multithreading, with an overall execution time of approximately 1.64 seconds compared to 1.97 seconds for multithreading. This difference occurred because multiprocessing allowed tasks to execute independently without Global Interpreter Lock interference, while multithreading incurred additional overhead from context switching and lock management.
 
 3. Can Python handle true parallelism using threads? Why or why not?
+- No, Python cannot achieve true parallelism with threads for CPU-heavy tasks because of the Global Interpreter Lock (GIL). The GIL ensures that only one thread executes Python code at a time, so even if you create multiple threads, they take turns running. Threads can still run concurrently when waiting for I/O operations, but for computations like calculating GWA, they do not run at the same time. To achieve true parallelism, you need multiprocessing, where each process runs independently on its own CPU core.
 
-4. What happens if you input a large number of grades (e.g., 1000)? Which
-method is faster and why?
+4. What happens if you input a large number of grades (e.g., 1000)? Which method is faster and why?
+- Multithreading would likely be "faster" in terms of system stability, but not calculation speed. Creating 1,000 threads is relatively easy for most modern OS. While, Multiprocessing would be significantly faster at the math, but launching 1,000 separate processes might crash your RAM or cause the OS to "thrash" as it struggles to manage 1,000 separate memory allocations.
 
 5. Which method is better for CPU-bound tasks and which for I/O-bound
 tasks?
+- Multiprocessing is better for CPU-bound tasks because it bypasses the Global Interpreter Lock and utilizes multiple cores for parallel computation. Multithreading is better for I/O-bound tasks since threads release the Global Interpreter Lock during I/O operations, allowing efficient overlap of waiting times with execution.
 
 6. How did your group apply creative coding or algorithmic solutions in this lab?
+- In this lab, we used multithreading and multiprocessing to compute student GWAs, and added processing time tracking and random delays. The delays were included to simulate different workloads so we could clearly see how threads and processes run at the same time and observe the order in which they finish. This helped us better understand concurrency and parallelism in Python. 
 
+
+SAMPLE EXECUTIONS:
 
 @JESREAL1JDL7LUSTRE ➜ /workspaces/QuadCore (main) $ python Lab2/Multiprocessing.py
 Enter number of students: 4
