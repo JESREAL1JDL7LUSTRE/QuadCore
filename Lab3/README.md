@@ -1,16 +1,21 @@
-Group: QuadCore
-Applying Task and Data Parallelism using concurrent.futures
+Group: QuadCore \
+**Applying Task and Data Parallelism using concurrent.futures**
 
 Analysis Questions
 1. Differentiate Task and Data Parallelism. Identify which part of the lab demonstrates each and justify the workload division. 
-    - 
+    - Task parallelism focuses on dividing a program by computation type, where different operations are executed concurrently on the same data, which is demonstrated in task_parallelism.py by calculating SSS, PhilHealth, Pag-IBIG, and Tax as separate functions running simultaneously. While data parallelism divides the workload by data elements, where the same operation is applied concurrently across multiple inputs, as shown in data_parallelism.py where identical salary computations are independently performed for each employee record, making the distinction clear between splitting by task versus splitting by data.
+    
 2. Explain how concurrent.futures managed execution, including submit(), map(), and Future objects. Discuss the purpose of with when creating an Executor.
-    - 
+    - The `concurrent.futures` module manages execution through several key mechanisms. The `submit()` method schedules a callable for execution and returns a Future object, which acts as a placeholder for the result, allowing asynchronous execution and later retrieval via `.result()`. The `map()` method automatically distributes an iterable of inputs across worker threads or processes, simplifying batch execution without manually handling futures. Future objects track task state, such as whether tasks are running or completed, and store results or exceptions for later access. The `with` statement serves an important purpose when creating an Executor by ensuring proper resource management. When the `with` block exits, the executor shuts down cleanly, releasing threads or processes and preventing resource leaks that could otherwise accumulate and degrade system performance.
+    
 3. Analyze ThreadPoolExecutor execution in relation to the GIL and CPU cores. Did true parallelism occur? 
-    - 
+    - Because of Python’s GIL, only one thread can execute to Python bytecode at any given time, which limits the true parallel execution in multithreaded programs. While ThreadPoolExecutor can significantly improve performance for I/O-bound tasks such as file handling or network requests, it does not provide real speed improvements for CPU-bound computations like salary calculations that require intensive processing. As a result, although the execution may appear concurrent, true CPU parallelism did not occur at the instruction level.
+
 4. Explain why ProcessPoolExecutor enables true parallelism, including memory space separation and GIL behavior.
-    - 
-5. Evaluate scalability if the system increases from 5 to 10,000 employees. Which approach scales better and why? 
-    - 
+    - ProcessPoolExecutor enables true parallelism because each process runs in a separate memory space with its own Python interpreter and its own GIL. Since the GIL does not restrict execution across separate processes, multiple CPU cores can execute tasks simultaneously, making it suitable for CPU-bound workloads.
+    
+5. Evaluate scalability if the system increases from 5 to 10,000 employees. Which approach scales better and why?
+    - Data parallelism scales better when the system increases from 5 to 10,000 employees. This is because payroll calculations per employee are independent, making them ideal for distributing across processes. Using ProcessPoolExecutor avoids GIL limitations and fully utilizes multiple CPU cores, allowing the workload to be efficiently divided among available processors. In contrast, task parallelism has overhead from managing many small tasks per employee, which reduces efficiency at scale. As the number of employees grows, the administrative burden of coordinating numerous small tasks becomes a bottleneck, whereas data parallelism maintains consistent performance by simply distributing larger batches of independent employee records across worker processes.
+
 6. Provide a real-world payroll system example. Indicate where Task Parallelism and Data Parallelism would be applied, and which executor you would use.
-    - 
+    - In a real-world payroll system, task parallelism could be applied when computing different components of a single employee’s salary, such as taxes, benefits, and deductions concurrently using ThreadPoolExecutor. Data parallelism would be applied when processing payroll for thousands of employees at once, distributing employees across multiple processes using ProcessPoolExecutor to maximize CPU utilization.
