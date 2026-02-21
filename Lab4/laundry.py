@@ -133,3 +133,42 @@ def parallel():
     elapsed = time.perf_counter() - start
     print(f"[PARALLEL] Total time: {elapsed:.4f}s")
     return elapsed
+
+# ─────────────────────────────────────────────
+# BENCHMARK
+# ─────────────────────────────────────────────
+if __name__ == "__main__":
+    print("=" * 55)
+    print("  LAUNDRY PARALLEL PROCESSING BENCHMARK")
+    print(f"  Loads: {NUM_LOADS}  |  Fold Workers: {NUM_FOLD_WORKERS}")
+    print("=" * 55)
+
+    # Warm-up (eliminate cold-start variance)
+    for _ in range(2):
+        sort_load(0); wash_load(0); dry_load(0)
+
+    seq_time  = sequential()
+    par_time  = parallel()
+    speedup   = seq_time / par_time
+    ideal     = NUM_LOADS  # ideal linear speedup
+
+    print("\n" + "=" * 55)
+    print("  BENCHMARK RESULTS")
+    print("=" * 55)
+    print(f"  Sequential time : {seq_time:.4f} seconds")
+    print(f"  Parallel time   : {par_time:.4f} seconds")
+    print(f"  Speedup         : {speedup:.2f}x")
+    print(f"  Ideal speedup   : ~{ideal}x (linear)")
+    efficiency = (speedup / ideal) * 100
+    print(f"  Efficiency      : {efficiency:.1f}%")
+    print("=" * 55)
+
+    print("\n  ANALYSIS:")
+    if speedup >= ideal * 0.7:
+        print("  Good speedup — pipeline effectively overlaps stages.")
+    else:
+        print("  Speedup below ideal — bottlenecks present:")
+        print("  - Sort stage is serialized (one sorter, sequential gate).")
+        print("  - Thread overhead from frequent context switches.")
+        print("  - Dry time dominates; earlier stages wait on dryer.")
+    print()
