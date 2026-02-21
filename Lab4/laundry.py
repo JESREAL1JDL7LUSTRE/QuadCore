@@ -71,3 +71,65 @@ def sequential():
     elapsed = time.perf_counter() - start
     print(f"[SEQUENTIAL] Total time: {elapsed:.4f}s")
     return elapsed
+
+# ─────────────────────────────────────────────
+# PARALLEL VERSION — Pipelined Task Parallelism
+# + Data Parallelism within Folding
+# ─────────────────────────────────────────────
+def parallel():
+    """
+    Task parallelism: overlapping pipeline stages across loads.
+      - Sort stage runs ahead while earlier loads wash/dry/fold.
+    Data parallelism: folding is split across multiple threads simultaneously.
+
+    Implementation uses a semaphore-gated pipeline with a thread pool.
+    """
+    print("\n[PARALLEL] Starting...")
+    start = time.perf_counter()
+
+    # Shared pipeline queues (simulated via events for each load)
+    sorted_events  = [threading.Event() for _ in range(NUM_LOADS)]
+    washed_events  = [threading.Event() for _ in range(NUM_LOADS)]
+    dried_events   = [threading.Event() for _ in range(NUM_LOADS)]
+    folded_events  = [threading.Event() for _ in range(NUM_LOADS)]
+
+    def pipeline_load(i):
+        """Each load goes through its stages, but stages overlap across loads."""
+        load_id = i + 1
+
+        # SORT (can start as soon as previous sort is done — sequential gate)
+        if i > 0:
+            sorted_events[i - 1].wait()  # wait for previous load to be sorted
+        sort_load(load_id)
+        sorted_events[i].set()
+
+        # WASH (can start immediately after sort; machine handles it)
+        wash_load(load_id)
+        washed_events[i].set()
+
+        # DRY (starts right after wash; dryer handles it)
+        dry_load(load_id)
+        dried_events[i].set()
+
+        # FOLD — Data Parallelism: split folding across worker threads
+        with ThreadPoolExecutor(max_workers=NUM_FOLD_WORKERS) as fold_pool:
+            futures = [
+                fold_pool.submit(fold_portion, load_id, p)
+                for p in range(NUM_FOLD_WORKERS)
+            ]
+            for f in futures:
+                f.result()  # wait for all fold workers
+        folded_events[i].set()
+
+        with lock:
+            print(f"  Load {load_id} complete.")
+
+    # Launch all load pipelines concurrently (task parallelism)
+    with ThreadPoolExecutor(max_workers=NUM_LOADS) as pool:
+        futures = [pool.submit(pipeline_load, i) for i in range(NUM_LOADS)]
+        for f in futures:
+            f.result()
+
+    elapsed = time.perf_counter() - start
+    print(f"[PARALLEL] Total time: {elapsed:.4f}s")
+    return elapsed
