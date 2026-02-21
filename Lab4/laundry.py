@@ -47,3 +47,27 @@ def fold_portion(load_id, portion):
     """Fold one portion of a load (data parallelism within folding)."""
     time.sleep(FOLD_TIME / NUM_FOLD_WORKERS)
     return portion
+
+# ─────────────────────────────────────────────
+# SEQUENTIAL VERSION
+# ─────────────────────────────────────────────
+def sequential():
+    """
+    One person handles each load completely (sort→wash→dry→fold)
+    before moving to the next load.
+    """
+    print("\n[SEQUENTIAL] Starting...")
+    start = time.perf_counter()
+
+    for load_id in range(1, NUM_LOADS + 1):
+        sort_load(load_id)
+        wash_load(load_id)
+        dry_load(load_id)
+        # Folding is also done sequentially, one item at a time
+        for portion in range(NUM_FOLD_WORKERS):
+            fold_portion(load_id, portion)
+        print(f"  Load {load_id} complete.")
+
+    elapsed = time.perf_counter() - start
+    print(f"[SEQUENTIAL] Total time: {elapsed:.4f}s")
+    return elapsed
