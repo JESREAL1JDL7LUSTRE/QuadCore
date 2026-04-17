@@ -2,8 +2,6 @@
 
 <div align="center">
 
-### 🚀 Developers
-
 <table>
   <tr>
     <td align="center">
