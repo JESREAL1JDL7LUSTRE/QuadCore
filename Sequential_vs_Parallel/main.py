@@ -1,0 +1,8 @@
+import random
+import time
+
+from sequentialSortingAlgorithm import mergeSort
+from parallelSortingAlgorithm import parallelMergeSort
+from sequentialSearchingAlgorithm import linearSearch
+from parallelSearchingAlgorithm import parallel_linear_search
+
