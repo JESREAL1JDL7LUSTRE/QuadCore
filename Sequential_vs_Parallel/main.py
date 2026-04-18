@@ -35,3 +35,18 @@ def run_test(size):
 
     arr4 = data.copy()
     _, par_search_time = time_function(parallel_linear_search, arr4, target)
+
+    print("\n--- SORTING ---")
+    print(f"Sequential Merge Sort: {seq_time:.6f} sec")
+    print(f"Parallel Merge Sort:   {par_time:.6f} sec")
+    print("Sort Correctness:", "OK" if arr1 == par_result else "FAILED")
+
+    print("\n--- SEARCHING ---")
+    print(f"Sequential Linear Search: {seq_search_time:.6f} sec")
+    print(f"Parallel Linear Search:   {par_search_time:.6f} sec")
+
+if __name__ == "__main__":
+    sizes = [1000, 100000, 1000000]
+
+    for size in sizes:
+        run_test(size)
